@@ -4,3 +4,6 @@
 
 ###### made by LakWon
 
+#### How to run
+###### start : sudo nohup mvn spring-boot:run &
+###### stop : 1) ps -ef  2) kill -9 [PID]
