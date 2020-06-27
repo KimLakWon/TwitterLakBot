@@ -2,6 +2,8 @@ package com.hello.service;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import twitter4j.Status;
@@ -11,6 +13,8 @@ import twitter4j.TwitterFactory;
 
 @Service
 public class UpdateStatusService {
+	
+	private Logger logger = LoggerFactory.getLogger(UpdateStatusService.class);
 	
 	private String message;
 	private boolean start;
@@ -34,9 +38,10 @@ public class UpdateStatusService {
 		Status status = null;
 		try {
 			if(message == null) {
-				message = "success!";
+				message = "default message.";
 			}
-			status = twitter.updateStatus(message + "\nnumber: "+ Math.random()*1000000);
+			status = twitter.updateStatus(message + "\n"+ Math.random()*1000000);
+			logger.info("Successfully updated the status to [" + status.getText() + "].");
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}

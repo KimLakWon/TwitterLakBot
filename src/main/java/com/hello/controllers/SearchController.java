@@ -12,24 +12,27 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hello.model.UserVO;
+import com.hello.service.SearchService;
 import com.hello.service.UpdateStatusService;
 
 @RestController
 @RequestMapping("/body/*")
-public class UpdateStatusController {
+public class SearchController {
 
-	private Logger logger = LoggerFactory.getLogger(UpdateStatusController.class);
+	private Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@Autowired
-	private UpdateStatusService updateStatusService;
+	private SearchService searchService;
 	
-	@RequestMapping(value = "/UpdateStatus", method = RequestMethod.POST)
+	@RequestMapping(value = "/Search", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void updateStatus(HttpServletRequest request) {
+	public void search(HttpServletRequest request) {
 		boolean start = Boolean.parseBoolean(request.getParameter("start"));
-		updateStatusService.setStart(start);
-		String message = request.getParameter("message");
-		updateStatusService.setMessage(message);
-		logger.info(message +", " + start);
+		searchService.setStart(start);
+		int count = Integer.parseInt(request.getParameter("count"));
+		searchService.setCount(count);
+		String query = request.getParameter("query");
+		searchService.setQuery(query);
+		logger.info(query +", " + count + "," + start);
 	}
 }
