@@ -26,7 +26,14 @@ public class SearchService {
 	private int count;
 	private boolean start;
 	private boolean saveFile;
-
+	private boolean oneTime;
+	
+	public boolean isOneTime() {
+		return oneTime;
+	}
+	public void setOneTime(boolean oneTime) {
+		this.oneTime = oneTime;
+	}
 	public void setQuery(String query) {
 		this.query = query;
 	}
@@ -90,7 +97,9 @@ public class SearchService {
 			logger.error("Non-Expected Exception!");
 			e.printStackTrace();
 		}finally {
-			
+			if(isOneTime()) {
+				setStart(false);
+			}
 		}
 	}
 	protected String getMessage(Status status) {

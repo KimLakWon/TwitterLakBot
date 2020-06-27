@@ -18,7 +18,14 @@ public class UpdateStatusService {
 	
 	private String message;
 	private boolean start;
-
+	private boolean oneTime;
+	
+	public boolean isOneTime() {
+		return oneTime;
+	}
+	public void setOneTime(boolean oneTime) {
+		this.oneTime = oneTime;
+	}
 	public void setMessage(String message) {
 		this.message = message;
 	}
@@ -44,6 +51,10 @@ public class UpdateStatusService {
 			logger.info("Successfully updated the status to [" + status.getText() + "].");
 		} catch (TwitterException e) {
 			e.printStackTrace();
+		}finally {
+			if(isOneTime()) {
+				setStart(false);
+			}
 		}
 	}
 }

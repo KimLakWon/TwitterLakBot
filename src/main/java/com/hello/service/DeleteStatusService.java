@@ -2,6 +2,7 @@ package com.hello.service;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +26,28 @@ public class DeleteStatusService {
 	
 	private Logger logger = LoggerFactory.getLogger(DeleteStatusService.class);
 	
-	private String message;
 	private boolean start;
-
-	public void setMessage(String message) {
-		this.message = message;
+	private int cnt;
+	private boolean all;
+	private boolean oneTime;
+	
+	public boolean isOneTime() {
+		return oneTime;
+	}
+	public void setOneTime(boolean oneTime) {
+		this.oneTime = oneTime;
+	}
+	public int getCnt() {
+		return cnt;
+	}
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
+	}
+	public boolean isAll() {
+		return all;
+	}
+	public void setAll(boolean all) {
+		this.all = all;
 	}
 	public void setStart(boolean start) {
 		this.start = start;
@@ -39,30 +57,32 @@ public class DeleteStatusService {
 	}
 	@PostConstruct
 	private void init() {
-		setStart(true);
+		setStart(false);
+		setAll(false);
+		setCnt(0);
 	}
-	
-	public void deleteAll() {
+
+	public void delete() {
 		Twitter twitter = TwitterFactory.getSingleton();
-		//Status status = null;
 		List<Status> statusList = new ArrayList<Status>();
 		int pageNumber = 1;
+		int count = getCnt();
 		BufferedWriter bw = null;
 		try {
-			bw = new BufferedWriter(new FileWriter("tweets2.txt"));
-			while (true) {
+			bw = new BufferedWriter(new FileWriter("deleteStatusLog.txt"));
+			while (isAll() || count>0) {
 				try {
-					int size = statusList.size();
-					Paging page = new Paging(pageNumber++, 100);
+					int pageCount = (isAll() || count>50) ? 50 : count;
+					Paging page = new Paging(pageNumber++, pageCount);
+					count-=pageCount;
 					statusList = twitter.getUserTimeline(twitter.getScreenName(), page);
-					System.out.println("LAK"+ pageNumber +" : " + statusList.size());
-					System.out.println("LAKSTRING : " + statusList.toString());
 					for(Status status : statusList) {
-						bw.write("[LAK]");
-						bw.write(statusList.toString());
+						bw.write(status.getText());
+						bw.newLine();
 						twitter.destroyStatus(status.getId());
 					}
-					if (statusList.size() == size) {
+					logger.info("Successfully delete status : " + statusList.size());
+					if (statusList.size() == 0) {
 						break;
 					}
 				} catch (TwitterException e) {
@@ -72,34 +92,12 @@ public class DeleteStatusService {
 				}
 			}
 			bw.close();
-		}catch(Exception e) {
+		}catch(IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(isOneTime()) {
+				setStart(false);
+			}
 		}
-		
-		/*try {
-			long id = twitter.getId();
-			logger.info("Id : " + id);
-	        String name = twitter.getScreenName();
-	        logger.info("Name : " + name);
-	        String policy = twitter.getPrivacyPolicy();
-	        logger.info("Policy : " + policy);
-	        String termsOfService = twitter.getTermsOfService();
-	        logger.info("TermsOfService : " + termsOfService);
-	        AccountSettings accountSettings = twitter.getAccountSettings();
-	        logger.info("AccountSettings : " + accountSettings.toString());
-	        ResponseList<Status> statusList = twitter.getHomeTimeline();
-	        for(Status status : statusList) {
-	        	logger.info("@" + status.getUser().getScreenName() + " - " + status.getText());
-	        }
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}*/
-		/*try {
-			List<Status> statuses = twitter.getUserListStatuses(listId, paging)
-			status = twitter.destroyStatus();
-			logger.info("Successfully updated the status to [" + status.getText() + "].");
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}*/
 	}
 }

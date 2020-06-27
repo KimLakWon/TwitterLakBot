@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hello.app.Scheduler;
 import com.hello.model.UserVO;
 import com.hello.service.UpdateStatusService;
 
@@ -17,11 +18,15 @@ import com.hello.service.UpdateStatusService;
 public class ConfigController {
 
 	@Autowired
-	private UpdateStatusService updateStatusService;
+	private Scheduler scheduler;
 	
 	@RequestMapping(value = "/Config", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void message(HttpServletRequest request) {
-
+		String period = request.getParameter("period");
+		if(period != null) {
+			scheduler.remove();
+			scheduler.start(Integer.parseInt(period));
+		}
 	}
 }

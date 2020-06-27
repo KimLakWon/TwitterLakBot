@@ -26,10 +26,21 @@ public class UpdateStatusController {
 	@RequestMapping(value = "/UpdateStatus", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void updateStatus(HttpServletRequest request) {
-		boolean start = Boolean.parseBoolean(request.getParameter("start"));
-		updateStatusService.setStart(start);
+		String start = request.getParameter("start");
+		if(start != null) {
+			updateStatusService.setStart(Boolean.parseBoolean(start));
+		}
+		
 		String message = request.getParameter("message");
-		updateStatusService.setMessage(message);
-		logger.info(message +", " + start);
+		if(message != null) {
+			updateStatusService.setMessage(message);
+		}
+		
+		String oneTime = request.getParameter("one_time");
+		if(oneTime != null) {
+			updateStatusService.setOneTime(Boolean.parseBoolean(oneTime));
+		}
+		
+		logger.info(message +", " + start + ", " + oneTime);
 	}
 }

@@ -1,5 +1,7 @@
 package com.hello.controllers;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -27,10 +29,27 @@ public class DeleteStatusController {
 	@RequestMapping(value = "/DeleteStatus", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void updateStatus(HttpServletRequest request) {
-		boolean start = Boolean.parseBoolean(request.getParameter("start"));
-		deleteStatusService.setStart(start);
-		String message = request.getParameter("message");
-		deleteStatusService.setMessage(message);
-		logger.info(message +", " + start);
+		
+		String start = request.getParameter("start");
+		if(start != null) {
+			deleteStatusService.setStart(Boolean.parseBoolean(start));
+		}
+		
+		String all =  request.getParameter("all");
+		if(all != null) {
+			deleteStatusService.setAll(Boolean.parseBoolean(all));
+		}
+		
+		String cnt = request.getParameter("count");
+		if(cnt != null) {
+			deleteStatusService.setCnt(Integer.parseInt(cnt));
+		}
+		
+		String oneTime = request.getParameter("one_time");
+		if(oneTime != null) {
+			deleteStatusService.setOneTime(Boolean.parseBoolean(oneTime));
+		}
+		
+		logger.info(all + ", "+ cnt + ", " + start + ", " + oneTime);
 	}
 }
