@@ -14,6 +14,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @EnableAsync
 public class executorConfig extends ThreadPoolTaskScheduler {
 
+	private static final long serialVersionUID = 1L;
+
 	@Bean("serviceExecutor")
 	public TaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

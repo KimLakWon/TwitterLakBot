@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hello.app.Scheduler;
-import com.hello.model.UserVO;
-import com.hello.service.UpdateStatusService;
 
 @RestController
 @RequestMapping("/body/*")

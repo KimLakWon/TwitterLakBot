@@ -1,7 +1,5 @@
 package com.hello.controllers;
 
-import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -13,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hello.model.UserVO;
 import com.hello.service.DeleteStatusService;
-import com.hello.service.UpdateStatusService;
 
 @RestController
 @RequestMapping("/body/*")
