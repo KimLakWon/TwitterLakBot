@@ -1,8 +1,5 @@
 package com.hello.model;
 
-import lombok.Data;
-
-@Data
 public class UpdateStatusRequest {
 	
 	private String message;
