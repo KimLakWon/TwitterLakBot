@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @EnableAsync
-public class executorConfig extends ThreadPoolTaskScheduler {
+public class Config extends ThreadPoolTaskScheduler {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class executorConfig extends ThreadPoolTaskScheduler {
 		return executor;
 	}
 	
-	@Bean("scheduler")
+	@Bean("serviceScheduler")
 	public TaskScheduler taskScheduler() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setPoolSize(1);
@@ -40,10 +40,8 @@ public class executorConfig extends ThreadPoolTaskScheduler {
 	public ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long period) { 
 		if (period <= 0) { 
 			return null; 
-		} 
-		
-		ScheduledFuture<?> future = super.scheduleAtFixedRate(task, period); 
-		return future; 
 		}
-
+		
+		return super.scheduleAtFixedRate(task, period);
+	}
 }

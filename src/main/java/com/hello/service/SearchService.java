@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.hello.model.SearchRequest;
+
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -22,72 +24,43 @@ public class SearchService {
 	
 	private Logger logger = LoggerFactory.getLogger(SearchService.class);
 	
-	private String query;
-	private int count;
-	private boolean start;
-	private boolean saveFile;
-	private boolean oneTime;
+
+	private SearchRequest searchRequest;
 	
-	public boolean isOneTime() {
-		return oneTime;
-	}
-	public void setOneTime(boolean oneTime) {
-		this.oneTime = oneTime;
-	}
-	public void setQuery(String query) {
-		this.query = query;
+	public SearchRequest getSearchRequest() {
+		return searchRequest;
 	}
 
-	public int getCount() {
-		return count;
+	public void setSearchRequest(SearchRequest searchRequest) {
+		this.searchRequest = searchRequest;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
-	}
-
-	public void setStart(boolean start) {
-		this.start = start;
-	}
-	public boolean getStart() {
-		return start;
-	}
-	public void setSaveFile(boolean saveFile) {
-		this.saveFile = saveFile;
-	}
-	public boolean getSaveFile() {
-		return saveFile;
-	}
 	@PostConstruct
 	private void init() {
-		setStart(false);
-		setSaveFile(false);
-		setCount(20);
+		searchRequest = new SearchRequest();
+		searchRequest.setStart(false);
+		searchRequest.setSaveFile(false);
+		searchRequest.setCount(20);
 	}
 	
 	public void search() {
 		logger.info("search");
 		Twitter twitter = TwitterFactory.getSingleton();
-		BufferedWriter bw = null; 
+		
 		try {
-			if(query == null) {
-				query = "Machine Learning";
+			if(searchRequest.getQuery() == null) {
+				searchRequest.setQuery("Machine Learning");
 			}
-			Query searchQuery = new Query(query);
-			searchQuery.count(getCount());
+			Query searchQuery = new Query(searchRequest.getQuery());
+			searchQuery.count(searchRequest.getCount());
 			QueryResult result = null;
 			 
 			result = twitter.search(searchQuery);
-			int cnt = 1;
-			for (Status status : result.getTweets()) {
-				if(getSaveFile()) {
-					bw = new BufferedWriter(new FileWriter("tweets.txt"));
-				    bw.write(getMessage(status));
-				    bw.close();
-				}else {
-					logger.info((cnt++) + "");
-					logger.info(getMessage(status));
-				}
+			
+			if(searchRequest.isSaveFile()) {
+				SaveFileStatus(result);
+			}else {
+				PrintLogStatus(result);
 			}
 		} catch (TwitterException e) {
 			e.printStackTrace();
@@ -97,12 +70,29 @@ public class SearchService {
 			logger.error("Non-Expected Exception!");
 			e.printStackTrace();
 		}finally {
-			if(isOneTime()) {
-				setStart(false);
+			if(searchRequest.isOneTime()) {
+				searchRequest.setStart(false);
 			}
 		}
 	}
-	protected String getMessage(Status status) {
+	
+	private void PrintLogStatus(QueryResult result) {
+		int cnt = 1;
+		for (Status status : result.getTweets()) {
+			logger.info((cnt++) + ".");
+			logger.info(getMessage(status));
+		}
+	}
+	
+	private void SaveFileStatus(QueryResult result) throws  IOException{
+		BufferedWriter bw = new BufferedWriter(new FileWriter("searchResult.txt"));
+		for (Status status : result.getTweets()) {
+			    bw.write(getMessage(status));
+		}
+		bw.close();
+	}
+	
+	private String getMessage(Status status) {
 		return "@" + status.getUser().getScreenName() + ":"
 	             + status.getText() + "|||"
 	             + status.getRetweetCount() + "\r\n";

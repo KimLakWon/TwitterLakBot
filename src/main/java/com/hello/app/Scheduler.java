@@ -40,7 +40,7 @@ public class Scheduler {
 			DeleteStatusService deleteStatusService,
 			SearchService searchService,
 			@Qualifier("serviceExecutor")TaskExecutor taskExecutor,
-			@Qualifier("scheduler")TaskScheduler taskScheduler){
+			@Qualifier("serviceScheduler")TaskScheduler taskScheduler){
 		this.updateStatusService = updateStatusService;
 		this.deleteStatusService = deleteStatusService;
 		this.searchService = searchService;
@@ -55,27 +55,27 @@ public class Scheduler {
 	
 	public void start(long period) {
 		ScheduledFuture<?> task = taskScheduler.scheduleAtFixedRate(this::execute, period*1000); 
-		scheduledTasks.put("scheduler", task);
+		scheduledTasks.put("myScheduler", task);
 	}
 	public void remove() {
-		scheduledTasks.get("scheduler").cancel(true);
+		scheduledTasks.get("myScheduler").cancel(true);
 	}
 
 	public void execute() {
-	   logger.info("Execute Test. " + updateStatusService.getStart());
+	   logger.info("Execute: ");
 	   
-	   if(updateStatusService.getStart()) {
-		   logger.info("Execute updateStatusService.");
+	   if(updateStatusService.getUpdateStatusRequest().isStart()) {
+		   logger.info("- UpdateStatusService.");
 		   taskExecutor.execute(()-> updateStatusService.update());
 	   }
 	   
-	   if(searchService.getStart()) {
-		   logger.info("Execute searchService.");
+	   if(searchService.getSearchRequest().isStart()) {
+		   logger.info("- SearchService.");
 		   taskExecutor.execute(()-> searchService.search());
 	   }
 	   
-	   if(deleteStatusService.getStart()) {
-		   logger.info("Execute deleteStatusService.");
+	   if(deleteStatusService.getDeleteStatusRequest().isStart()) {
+		   logger.info("- DeleteStatusService.");
 		   taskExecutor.execute(()-> deleteStatusService.delete());
 	   }
    }

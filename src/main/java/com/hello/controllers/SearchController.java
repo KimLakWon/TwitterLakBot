@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hello.model.UserVO;
+import com.hello.model.SearchRequest;
 import com.hello.service.SearchService;
-import com.hello.service.UpdateStatusService;
 
 @RestController
 @RequestMapping("/body/*")
@@ -26,32 +25,38 @@ public class SearchController {
 	
 	@RequestMapping(value = "/Search", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void search(HttpServletRequest request) {
+	public String search(HttpServletRequest request) {
+		SearchRequest searchRequest = new SearchRequest();
+		
 		String start = request.getParameter("start");
 		if(start != null) {
-			searchService.setStart(Boolean.parseBoolean(start));
+			searchRequest.setStart(Boolean.parseBoolean(start));
 		}
 		
 		String count = request.getParameter("count");
 		if(count != null) {
-			searchService.setCount(Integer.parseInt(count));
+			searchRequest.setCount(Integer.parseInt(count));
 		}
 			
 		String query = request.getParameter("query");
 		if(query != null) {
-			searchService.setQuery(query);
+			searchRequest.setQuery(query);
 		}
 		
 		String saveFile = request.getParameter("save_file");
 		if(saveFile != null) {
-			searchService.setSaveFile(Boolean.parseBoolean(saveFile));
+			searchRequest.setSaveFile(Boolean.parseBoolean(saveFile));
 		}
 		
 		String oneTime = request.getParameter("one_time");
 		if(oneTime != null) {
-			searchService.setOneTime(Boolean.parseBoolean(oneTime));
+			searchRequest.setOneTime(Boolean.parseBoolean(oneTime));
 		}
 		
-		logger.info(query +", " + count + "," + saveFile +"," + oneTime +"," + start);
+		searchService.setSearchRequest(searchRequest);
+		
+		logger.info(searchRequest.toString());
+		
+		return searchRequest.toString();
 	}
 }
