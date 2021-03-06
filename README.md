@@ -24,4 +24,5 @@
 
 ### Maintenance : 2020-6-29 ~
 
-### Update 2021.03.07 : IU Analysis 생성 (IU 시간별 트윗 수 구하는 기능 추가)
+#### Update Commit 
+###### 2021.03.07 : IU Analysis 생성 (IU 시간별 트윗 수 구하는 기능 추가)
