@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.hello.service.DeleteStatusService;
 import com.hello.service.SearchService;
 import com.hello.service.UpdateStatusService;
+import com.hello.service.IUAnalysisService;
 
 @Component
 public class Scheduler {
@@ -29,6 +30,8 @@ public class Scheduler {
 	
 	private SearchService searchService;
 	
+	private IUAnalysisService iuAnalysisService;
+	
 	private TaskExecutor taskExecutor;
 	
 	private TaskScheduler taskScheduler;
@@ -39,11 +42,13 @@ public class Scheduler {
 	public Scheduler(UpdateStatusService updateStatusService,
 			DeleteStatusService deleteStatusService,
 			SearchService searchService,
+			IUAnalysisService iuAnalysisService,
 			@Qualifier("serviceExecutor")TaskExecutor taskExecutor,
 			@Qualifier("serviceScheduler")TaskScheduler taskScheduler){
 		this.updateStatusService = updateStatusService;
 		this.deleteStatusService = deleteStatusService;
 		this.searchService = searchService;
+		this.iuAnalysisService = iuAnalysisService;
 		this.taskExecutor = taskExecutor;
 		this.taskScheduler = taskScheduler;
 	}
@@ -64,6 +69,11 @@ public class Scheduler {
 	public void execute() {
 	   logger.info("Execute: ");
 	   
+	   if(iuAnalysisService.getIUAnalysisRequest().isStart()) {
+		   logger.info("- IU Analysis Service.");
+		   taskExecutor.execute(()-> iuAnalysisService.analysis());
+	   }
+
 	   if(updateStatusService.getUpdateStatusRequest().isStart()) {
 		   logger.info("- UpdateStatusService.");
 		   taskExecutor.execute(()-> updateStatusService.update());

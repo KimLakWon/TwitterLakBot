@@ -41,7 +41,14 @@ public class UpdateStatusService {
 			if(updateStatusRequest.getMessage() == null) {
 				updateStatusRequest.setMessage("default message.");
 			}
-			status = twitter.updateStatus(updateStatusRequest.getMessage() + "\n"+ Math.random()*1000000);
+			String endString = null;
+			if(updateStatusRequest.isFlag()) {
+				endString = ".\n";			
+			}else {			
+				endString = "\n";
+			}
+			status = twitter.updateStatus(updateStatusRequest.getMessage() + endString);
+			updateStatusRequest.setFlag(!updateStatusRequest.isFlag());
 			logger.info("Successfully updated the status to [" + status.getText() + "].");
 		} catch (TwitterException e) {
 			e.printStackTrace();

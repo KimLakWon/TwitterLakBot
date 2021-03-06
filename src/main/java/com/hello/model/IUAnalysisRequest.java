@@ -1,10 +1,10 @@
 package com.hello.model;
 
-public class UpdateStatusRequest {
+public class IUAnalysisRequest {
 	
 	private boolean flag;
 
-	private String message;
+	private int interval;
 	
 	private boolean start;
 	
@@ -18,12 +18,12 @@ public class UpdateStatusRequest {
 		this.flag = flag;
 	}
 
-	public String getMessage() {
-		return message;
+	public int getInterval() {
+		return interval;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	public boolean isStart() {
@@ -44,6 +44,6 @@ public class UpdateStatusRequest {
 
 	@Override
 	public String toString() {
-		return "UpdateStatusRequest [message=" + message + ", start=" + start + ", oneTime=" + oneTime + "]";
+		return "UpdateStatusRequest [interval=" + interval + ", start=" + start + ", oneTime=" + oneTime + "]";
 	}
 }
