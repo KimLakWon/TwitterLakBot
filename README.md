@@ -9,7 +9,7 @@
 
 #### How to run
 ###### start : sudo nohup mvn spring-boot:run &
-###### stop : 1) ps -ef  2) kill -9 [PID]  (1. sudo nohup .., 2. /bin/sh, 3. /usr/lib/jvm/java/bin/java, 4. /usr/lib/jvm/java-1.8.0-openjdk ..)
+###### stop : 1) ps -ef  2) kill -9 [PID]  (/usr/lib/jvm/java-1.8.0-openjdk ..)
 
 #### EC2 Instance
 ###### ec2 > security-group > inbound-rule > tcp/port/source
